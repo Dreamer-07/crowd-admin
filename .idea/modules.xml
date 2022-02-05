@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/crowd-admin-parent/crowd-admin-component/crowd-admin-component.iml" filepath="$PROJECT_DIR$/crowd-admin-parent/crowd-admin-component/crowd-admin-component.iml" />
+      <module fileurl="file://$PROJECT_DIR$/crowd-admin-parent/crowd-admin-entity/crowd-admin-entity.iml" filepath="$PROJECT_DIR$/crowd-admin-parent/crowd-admin-entity/crowd-admin-entity.iml" />
+      <module fileurl="file://$PROJECT_DIR$/crowd-admin-parent/crowd-admin-parent.iml" filepath="$PROJECT_DIR$/crowd-admin-parent/crowd-admin-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/crowd-admin-parent/crowd-admin-web/crowd-admin-web.iml" filepath="$PROJECT_DIR$/crowd-admin-parent/crowd-admin-web/crowd-admin-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/crowd-common-reverse/crowd-common-reverse.iml" filepath="$PROJECT_DIR$/crowd-common-reverse/crowd-common-reverse.iml" />
+      <module fileurl="file://$PROJECT_DIR$/crowd-common-util/crowd-common-util.iml" filepath="$PROJECT_DIR$/crowd-common-util/crowd-common-util.iml" />
+    </modules>
+  </component>
+</project>
