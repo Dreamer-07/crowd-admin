@@ -127,7 +127,7 @@
 
 5. 然后将文件复制到对应工程下的目录中即可
 
-## Spring 整合 MyBatis
+### Spring 整合 MyBatis
 
 > 目标
 
@@ -139,7 +139,7 @@
 
 - 通过注册 **SqlSessionFactoryBean** 组件实现 装配数据源(通过读取 `jdbc.properties`) & 指定 Mapper 配置文件位置 & 指定 mybatis-config.xml(mybatis 全局配置文件)
 - Mybatis 根据 xml 文件动态生成对应的代理类
-- 通过 **@MapperScannerConfigurer** 将扫描 Mapper 接口所在包并根据接口类型找到对应的代理类后添加到 IOC 容器中
+- 通过 **MapperScannerConfigurer** 将扫描 Mapper 接口所在包并根据接口类型找到对应的代理类后添加到 IOC 容器中
 - 在 Spring 其他组件中通过 `@Autowired` 注入 Mapper 接口代理类
 
 > 操作步骤
@@ -150,67 +150,198 @@
    <dependency>
        <groupId>org.springframework</groupId>
        <artifactId>spring-orm</artifactId>
-       <version>${prover07.spring.version}</version>
    </dependency>
    <!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
    <dependency>
        <groupId>org.springframework</groupId>
        <artifactId>spring-webmvc</artifactId>
-       <version>${prover07.spring.version}</version>
    </dependency>
    <!-- 数据库依赖 -->
    <!-- MySQL 驱动 -->
    <dependency>
        <groupId>mysql</groupId>
        <artifactId>mysql-connector-java</artifactId>
-       <version>8.0.20</version>
    </dependency>
    <!-- 数据源 -->
    <dependency>
        <groupId>com.alibaba</groupId>
        <artifactId>druid</artifactId>
-       <version>1.0.31</version>
    </dependency>
    <!-- MyBatis -->
    <dependency>
        <groupId>org.mybatis</groupId>
        <artifactId>mybatis</artifactId>
-       <version>3.2.8</version>
    </dependency>
    <!-- MyBatis 与 Spring 整合 -->
    <dependency>
        <groupId>org.mybatis</groupId>
        <artifactId>mybatis-spring</artifactId>
-       <version>1.2.2</version>
    </dependency>
    <!-- MyBatis 分页插件 -->
    <dependency>
        <groupId>com.github.pagehelper</groupId>
        <artifactId>pagehelper</artifactId>
-       <version>4.0.0</version>
    </dependency>
    ```
 
-   
-
 2. 准备 `jdbc.properties`
+
+   ```properties
+   jdbc.user=root
+   jdbc.password=root
+   jdbc.url=jdbc:mysql://localhost:3306/crowd_admin/useUnicode=true&characterEncoding=UTF-8
+   jdbc.diver=com.mysql.cj.jdbc.Driver
+   ```
 
 3. 创建 Spring 配置文件专门配置 Spring 和 Mybatis 整合相关
 
-4. 在 Spring 的配置文件中加载 `jdbc.properties`
+   `mybatis-config.xml`
 
-5. 配置数据源
+   ```xml
+   <?xml version="1.0" encoding="UTF-8"?>
+   <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0/EN"
+           "http://mybatis.org/dtd/mybatis-3-config.dtd">
+   <configuration>
+       <!--Spring与MyBatis整合后，MyBatis的配置文件可有可不有-->
+   </configuration>
+   ```
 
-6. 配置从数据源中获取数据库连接
+   `spring-persist-mybatis.xml`
 
-7. 配置 **SqlSessionFactoryBean**
+   ```xml
+   <?xml version="1.0" encoding="UTF-8"?>
+   <beans xmlns="http://www.springframework.org/schema/beans"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+   
+   </beans>
+   ```
+
+4. 在 Spring 的配置文件中加载 `jdbc.properties` 并配置数据源
+
+   ```xml
+   <!-- 加载配置文件 -->
+   <context:property-placeholder location="classpath:jdbc.properties" />
+   
+   <!-- 配置数据源 -->
+   <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+       <property name="username" value="${jdbc.user}" />
+       <property name="password" value="${jdbc.password}" />
+       <property name="url" value="${jdbc.url}" />
+       <property name="driverClassName" value="${jdbc.diver}" />
+   </bean>
+   ```
+
+5. 配置 **SqlSessionFactoryBean**
 
    - 装配数据源
+
    - 指定 Mapper.xml 配置文件的位置
+
    - 指定 Mybatis 全局配置文件(可选)
 
-8. 配置 MapperScannerConfigurer
+     ```xml
+     <!-- 配置 SqlSessionFactoryBean 整合 MyBatis -->
+     <bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+         <!-- Mybatis 全局配置文件位置 -->
+         <property name="configLocation" value="classpath:mybatis/mybatis-config.xml"/>
+     
+         <!-- 指定 Mapper.xml 配置文件检查 -->
+         <property name="mapperLocations" value="classpath:mybatis/mapper/*Mapper.xml" />
+     
+         <!-- 装配数据源 -->
+         <property name="dataSource" ref="dataSource" />
+     </bean>
+     
+     <!-- 配置 MapperScannerConfigurer -->
+     <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+         <!-- 配置 Mapper 接口对应的包位置 -->
+         <property name="basePackage" value="pers.prover07.crowd.dao" />
+     </bean>
+     ```
 
-9. 测试是否可以自动装配 Mapper 接口并通过这个接口操作数据库
+6. 配置 MapperScannerConfigurer
+
+7. 测试是否可以自动装配 Mapper 接口并通过这个接口操作数据库
+
+### 日志系统
+
+> 介绍
+
+约定/规范/接口:
+
+![image-20220205194727183](README.assets/image-20220205194727183.png)
+
+实现：
+
+![image-20220205194745032](README.assets/image-20220205194745032.png)
+
+> 不同日志系统的集合(以 **Slf4j** 为接口，不同日志系统的实现)
+
+![image-20220205195114757](README.assets/image-20220205195114757.png)
+
+> 使用 logback 替换 Spring 默认的 common-logging
+
+1. 导入依赖
+
+   ```xml
+   <dependency>
+       <groupId>org.slf4j</groupId>
+       <artifactId>slf4j-api</artifactId>
+   </dependency>
+   <dependency>
+       <groupId>ch.qos.logback</groupId>
+       <artifactId>logback-classic</artifactId>
+   </dependency>
+   ```
+
+2. 排除 Spring 依赖中的 `common-logging` 并导入 Sl4fj 转换依赖
+
+   ```xml
+   <dependency>
+       <groupId>org.springframework</groupId>
+       <artifactId>spring-orm</artifactId>
+       <exclusions>
+           <exclusion>
+               <groupId>commons-logging</groupId>
+               <artifactId>commons-logging</artifactId>
+           </exclusion>
+       </exclusions>
+   </dependency>
+   ```
+
+   ```xml
+   <dependency>
+       <groupId>org.slf4j</groupId>
+       <artifactId>jcl-over-slf4j</artifactId>
+   </dependency>
+   ```
+
+3. 编写 logback 配置文件: 在 `src/main/resources` 下创建 **logback.xml** 文件
+
+   ```xml
+   <?xml version="1.0" encoding="UTF-8"?>
+   <configuration debug="true">
+       <!-- 指定日志输出的位置(控制台) -->
+       <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+           <encoder>
+               <!-- 日志输出的格式 -->
+               <!-- 按照顺序分别是： 时间、 日志级别、 线程名称、 打印日志的类、 日志主体
+               内容、 换行 -->
+               <pattern>[%d{HH:mm:ss.SSS}] [%-5level] [%-8thread] [%logger] [%msg]%n</pattern>
+           </encoder>
+       </appender>
+       <!-- 设置全局日志级别。 日志级别按顺序分别是： DEBUG、 INFO、 WARN、 ERROR -->
+       <!-- 指定任何一个日志级别都只打印当前级别和后面级别的日志。 -->
+       <root level="INFO">
+           <!-- 指定打印日志的 appender， 这里通过"STDOUT"引用了前面配置的 appender -->
+           <appender-ref ref="STDOUT" />
+       </root>
+       <!-- 根据特殊需求指定局部日志级别 -->
+       <logger name="org.fall.mapper" level="DEBUG"/>
+   </configuration>
+   ```
+
+   
 
 ## 其他
