@@ -264,6 +264,98 @@
 
 7. 测试是否可以自动装配 Mapper 接口并通过这个接口操作数据库
 
+### Spring 整合 SpringMVC
+
+> 目标：
+
+1. 可以在 Controller 中装配 Service 并使用
+2. 可以通过页面访问 Controller 中的接口方法
+
+> 思路：
+
+- 配置文件之间的关系
+
+  ![image-20220210103724112](README.assets/image-20220210103724112.png)
+
+> 代码
+
+1. [web.xml] 配置监听器，在容器启动时加载 Spring 配置文件
+
+   ```xml
+   <!-- 配置容器参数 -->
+   <context-param>
+       <param-name>contextConfigLocation</param-name>
+       <!-- 指定配置文件位置 -->
+       <param-value>classpath:spring-persist-*.xml</param-value>
+   </context-param>
+   <!-- 配置监听器 -->
+   <listener>
+       <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+   </listener>
+   ```
+
+2. [web.xml] 配置字符集过滤器
+
+   ```xml
+   <!-- 配置字符集过滤器 -->
+   <filter>
+       <filter-name>characterEncodingFilter</filter-name>
+       <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+       <init-param>
+           <param-name>encoding</param-name>
+           <param-value>true</param-value>
+       </init-param>
+       <init-param>
+           <param-name>forceResponseEncoding</param-name>
+           <param-value>UTF-8</param-value>
+       </init-param>
+   </filter>
+   <filter-mapping>
+       <filter-name>characterEncodingFilter</filter-name>
+       <url-pattern>/*</url-pattern>
+   </filter-mapping>
+   ```
+
+3. [web.xml] 配置 DispatcherServlet
+
+   ```xml
+   <!-- 配置 DispatcherServlet -->
+   <servlet>
+       <servlet-name>dispatcherServlet</servlet-name>
+       <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+       <!-- 指定 SpringMVC 配置文件 -->
+       <init-param>
+           <param-name>contextConfigLocation</param-name>
+           <param-value>classpath:spring-web-mvc.xml</param-value>
+       </init-param>
+       <!-- 在 Web 应用启动时就创建对象，完成初始化工作 -->
+       <load-on-startup>1</load-on-startup>
+   </servlet>
+   <servlet-mapping>
+       <servlet-name>dispatcherServlet</servlet-name>
+       <url-pattern>/</url-pattern>
+   </servlet-mapping>
+   ```
+
+4. [spring-web-mvc.xml] 配置 SpringMVC 相关属性
+
+   ```xml
+   <!-- 配置处理静态资源的控制器 -->
+   <mvc:default-servlet-handler />
+   
+   <!-- 开启 MVC 注解驱动 -->
+   <mvc:annotation-driven />
+   
+   <!-- 配置组件扫描 -->
+   <context:component-scan base-package="pers.prover07.crowd"/>
+   
+   <!-- 配种视图解析器 -->
+   <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+       <property name="prefix" value="/WEB-INF/"/>
+       <property name="suffix" value=".jsp"/>
+   </bean>
+   ```
+
 ### 日志系统
 
 > 介绍
