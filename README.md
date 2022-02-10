@@ -338,10 +338,93 @@
            <appender-ref ref="STDOUT" />
        </root>
        <!-- 根据特殊需求指定局部日志级别 -->
-       <logger name="org.fall.mapper" level="DEBUG"/>
+       <logger name="pers.prover07.crowd.dao" level="DEBUG"/>
    </configuration>
    ```
 
-   
+### 声明式事务
 
-## 其他
+目标：在框架环境下通过一系列配置由 Spring 来管理通用事务操作
+
+> 思路
+
+注意：
+
+- 声明式事务主要是围绕着 Service 层的业务方法
+- 需要实现方式有两种：
+  1. 基于注解 **@Transactional** 注解实现(TODO: 
+  2. 基于 XML + 配置 AOP 的方式实现(这里以这种为主)
+
+步骤：
+
+1. 配置事务管理器，指定数据源
+2. 配置事务通知
+3. 配置事务切面
+
+> 代码
+
+1. 创建一个新的 Spring 配置文件(单一职责，避免一个文件干太多事情)
+
+2. 配置组件扫描
+
+   ```xml
+   <!-- 配置组件扫描 -->
+   <context:component-scan base-package="pers.prover07.crowd.service" />
+   ```
+
+3. 选择合适的事务管理器
+
+   ![image-20220210094359931](README.assets/image-20220210094359931.png)
+
+   ```xml
+   <!-- 配置事务管理器 -->
+   <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+       <!-- 装配数据源 -->
+       <property name="dataSource" ref="dataSource" />
+   </bean>
+   ```
+
+4. 配置事务通知
+
+   ```xml
+   <!-- 配置事务通知 -->
+   <tx:advice id="txAdvice" transaction-manager="txManager">
+       <tx:attributes>
+           <!-- 配置插入方法为只读属性，这样可以让 Mysql 帮我们进行一写优化 -->
+           <tx:method name="get*" read-only="true"/>
+           <tx:method name="query*" read-only="true"/>
+           <tx:method name="find*" read-only="true"/>
+           <tx:method name="count*" read-only="true"/>
+   
+           <!-- 增删改方法：配置事务传播行为，回滚异常 -->
+           <!--
+                propagation: 配置事务传播行为
+                   REQUIRES：    默认值;  表示当前方法必须工作在事务中，如果线程上没有已经开启的事务，则自己开启新事物，如果有就直接使用
+                   REQUIRES_NEW：建议;    不管当前线程上有没有事务，都要自己开启事务，在自己的事务中运行
+               rollback-for: 回滚异常
+                   默认值：运行时异常
+                   建议：运行时异常 + 编译时异常
+                -->
+           <tx:method name="save*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception" />
+           <tx:method name="update*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception" />
+           <tx:method name="remove*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception" />
+           <tx:method name="batch*" propagation="REQUIRES_NEW" rollback-for="java.lang.Exception" />
+   
+       </tx:attributes>
+   </tx:advice>
+   ```
+
+5. 配置事务切面(切入点表达式 + 关联事务通知)
+
+   ```xml
+   <!-- 配置事务切面 -->
+   <aop:config>
+       <!-- 配置切入点表达式 -->
+       <aop:pointcut id="txPointCut" expression="execution(* *..*ServiceImpl.*(..))" />
+   
+       <!-- 将切入点和事务通知关联起来 -->
+       <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointCut" />
+   </aop:config>
+   ```
+
+## 其他 
