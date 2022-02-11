@@ -13,9 +13,18 @@
     <!-- 配置组件扫描 -->
     <context:component-scan base-package="pers.prover07.crowd"/>
 
-    <!-- 配种视图解析器 -->
+    <!-- 配置视图解析器 -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/"/>
         <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!-- 配置异常解析器 -->
+    <bean id="simpleMappingExceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <prop key="java.lang.Exception">error/index</prop>
+            </props>
+        </property>
     </bean>
 </beans>

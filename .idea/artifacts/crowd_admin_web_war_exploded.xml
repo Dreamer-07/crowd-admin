@@ -24,6 +24,7 @@
           <element id="archive" name="crowd-common-util-1.0-SNAPSHOT.jar">
             <element id="module-output" name="crowd-common-util" />
           </element>
+          <element id="library" level="project" name="Maven: org.projectlombok:lombok:1.18.4" />
           <element id="archive" name="crowd-common-reverse-1.0-SNAPSHOT.jar">
             <element id="module-output" name="crowd-common-reverse" />
           </element>
@@ -52,6 +53,7 @@
           <element id="library" level="project" name="Maven: org.aspectj:aspectjweaver:1.9.2" />
           <element id="library" level="project" name="Maven: cglib:cglib:2.2" />
           <element id="library" level="project" name="Maven: asm:asm:3.1" />
+          <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.8.5" />
         </element>
       </element>
       <element id="directory" name="META-INF">
