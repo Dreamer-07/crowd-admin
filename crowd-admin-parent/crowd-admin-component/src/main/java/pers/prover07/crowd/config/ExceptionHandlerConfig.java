@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
+import pers.prover.crowd.exception.AccessForbiddenException;
 import pers.prover.crowd.exception.LoginFailedException;
 import pers.prover.crowd.util.CrowdUtil;
 import pers.prover.crowd.util.ResultEntity;
@@ -21,8 +22,8 @@ import java.io.IOException;
 @ControllerAdvice
 public class ExceptionHandlerConfig {
 
-    @ExceptionHandler(LoginFailedException.class)
-    public ModelAndView resolverLoginFailedException(LoginFailedException ex,
+    @ExceptionHandler({LoginFailedException.class, AccessForbiddenException.class})
+    public ModelAndView resolverLoginFailedException(Exception ex,
                                                      HttpServletRequest request,
                                                      HttpServletResponse response) {
         return commonResolver("admin/login", ex, request, response);
