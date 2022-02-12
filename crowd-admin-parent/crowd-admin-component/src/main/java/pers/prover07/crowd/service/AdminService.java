@@ -12,5 +12,12 @@ import java.util.List;
  * @date 2022/2/10 11:33
  */
 public interface AdminService {
-    List<Admin> getAll();
+
+    /**
+     * 根据用户信息获取 Admin 用户
+     * @param username
+     * @param password
+     * @return
+     */
+    Admin getAdminByUserInfo(String username, String password);
 }

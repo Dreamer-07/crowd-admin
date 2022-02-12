@@ -29,4 +29,5 @@
     </bean>
 
     <mvc:view-controller path="/login" view-name="admin/login" />
+    <mvc:view-controller path="/main" view-name="admin/main" />
 </beans>

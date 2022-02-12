@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
+import pers.prover.crowd.exception.LoginFailedException;
 import pers.prover.crowd.util.CrowdUtil;
 import pers.prover.crowd.util.ResultEntity;
 
@@ -20,10 +21,32 @@ import java.io.IOException;
 @ControllerAdvice
 public class ExceptionHandlerConfig {
 
+    @ExceptionHandler(LoginFailedException.class)
+    public ModelAndView resolverLoginFailedException(LoginFailedException ex,
+                                                     HttpServletRequest request,
+                                                     HttpServletResponse response) {
+        return commonResolver("admin/login", ex, request, response);
+    }
+
     @ExceptionHandler(Exception.class)
     public ModelAndView resolverException(Exception exception,
                                           HttpServletRequest request,
-                                          HttpServletResponse response) throws IOException {
+                                          HttpServletResponse response) {
+        return commonResolver("system/error", exception, request, response);
+    }
+
+    /**
+     * 异常解析通用处理逻辑
+     * @param viewName
+     * @param exception
+     * @param request
+     * @param response
+     * @return
+     */
+    public ModelAndView commonResolver(
+            String viewName, Exception exception,
+            HttpServletRequest request,
+            HttpServletResponse response) {
         // 获取异常信息
         String message = exception.getMessage();
         // 判断请求类型
@@ -35,10 +58,14 @@ public class ExceptionHandlerConfig {
             Gson gson = new Gson();
             String jsonStr = gson.toJson(resultEntity);
             // 返回 json 字符串数据
-            response.getWriter().write(jsonStr);
+            try {
+                response.getWriter().write(jsonStr);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return null;
         }
-        ModelAndView modelAndView = new ModelAndView("error/index");
+        ModelAndView modelAndView = new ModelAndView(viewName);
         modelAndView.addObject("exception", exception);
         return modelAndView;
     }
