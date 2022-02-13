@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
     <title>(尚筹网)后台管理登录</title>
+    <base href="http://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/"/>
     <link rel="stylesheet" href="tailwind/tailwind.min.css">
 </head>
 <body class="p-0">

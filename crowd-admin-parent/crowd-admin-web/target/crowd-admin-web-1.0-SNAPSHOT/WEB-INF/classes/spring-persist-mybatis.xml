@@ -25,6 +25,23 @@
 
         <!-- 装配数据源 -->
         <property name="dataSource" ref="dataSource" />
+
+        <!-- 配置 mybatis 插件 -->
+        <property name="plugins">
+            <array>
+                <!-- 配置分页插件 -->
+                <bean class="com.github.pagehelper.PageHelper">
+                    <property name="properties">
+                        <props>
+                            <!-- 配置数据库方言 -->
+                            <prop key="dialect">mysql</prop>
+                            <!-- 开启页码的合理化修正，会自动在 1~总页数 之间修正页码 -->
+                            <prop key="reasonable">true</prop>
+                        </props>
+                    </property>
+                </bean>
+            </array>
+        </property>
     </bean>
 
     <!-- 配置 MapperScannerConfigurer -->

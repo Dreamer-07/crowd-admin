@@ -3,7 +3,6 @@
 <head>
     <title>(尚筹网)后台管理</title>
     <%@ include file="/WEB-INF/include/resources.jsp" %>
-    <link rel="stylesheet" href="css/main.css">
     <style>
         .tree li {
             list-style-type: none;

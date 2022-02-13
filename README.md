@@ -264,6 +264,62 @@
 
 7. 测试是否可以自动装配 Mapper 接口并通过这个接口操作数据库
 
+### MyBatis 引入 PageHelper 实现分页
+
+> 优点：采取了 "非侵入式" 的设计，原本使用的查询逻辑不必有任何修改
+
+1. 导入依赖
+
+   ```xml
+   <!-- MyBatis 分页插件 -->
+   <dependency>
+       <groupId>com.github.pagehelper</groupId>
+       <artifactId>pagehelper</artifactId>
+   </dependency>
+   ```
+
+2. 在 **sqlSessionFactoryBean** 中配置 Mybatis 插件
+
+   ```xml
+   <!-- 配置 SqlSessionFactoryBean 整合 MyBatis -->
+   <bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+       ...
+   
+       <!-- 配置 mybatis 插件 -->
+       <property name="plugins">
+           <array>
+               <!-- 配置分页插件 -->
+               <bean class="com.github.pagehelper.PageHelper">
+                   <property name="properties">
+                       <props>
+                           <!-- 配置数据库方言 -->
+                           <prop key="dialect">mysql</prop>
+                           <!-- 开启页码的合理化修正，会自动在 1~总页数 之间修正页码 -->
+                           <prop key="reasonable">true</prop>
+                       </props>
+                   </property>
+               </bean>
+           </array>
+       </property>
+   </bean>
+   ```
+
+3. 使用 
+
+   ```java
+   @Override
+   public PageInfo<Admin> getPageInfo(String keyword, Integer pageNum, Integer pageSize) {
+       // 开启 PageHelper 分页
+       PageHelper.startPage(pageNum, pageSize);
+   
+       // 调用查询方法
+       List<Admin> adminList = adminMapper.selectAdminByKeyword(keyword);
+   
+       // 封装成 PageInfo 对象
+       return new PageInfo<>(adminList);
+   }
+   ```
+
 ### Spring 整合 SpringMVC
 
 > 目标：

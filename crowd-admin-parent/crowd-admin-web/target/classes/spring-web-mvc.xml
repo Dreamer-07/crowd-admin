@@ -30,6 +30,7 @@
 
     <mvc:view-controller path="/login" view-name="admin/login" />
     <mvc:view-controller path="/main" view-name="admin/main" />
+    <mvc:view-controller path="/admin/to/add" view-name="admin/add" />
 
     <mvc:interceptors>
         <mvc:interceptor>

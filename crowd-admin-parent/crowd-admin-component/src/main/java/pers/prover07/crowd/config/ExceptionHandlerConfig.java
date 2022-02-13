@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import pers.prover.crowd.exception.AccessForbiddenException;
+import pers.prover.crowd.exception.AdminLoginAcctNoUniqueException;
 import pers.prover.crowd.exception.LoginFailedException;
 import pers.prover.crowd.util.CrowdUtil;
 import pers.prover.crowd.util.ResultEntity;
@@ -22,18 +23,18 @@ import java.io.IOException;
 @ControllerAdvice
 public class ExceptionHandlerConfig {
 
+    @ExceptionHandler(AdminLoginAcctNoUniqueException.class)
+    public ModelAndView resolverAdminLoginAcctNoUnique(AdminLoginAcctNoUniqueException ex,
+                                                       HttpServletRequest request,
+                                                       HttpServletResponse response) {
+        return commonResolver("admin/add", ex, request, response);
+    }
+
     @ExceptionHandler({LoginFailedException.class, AccessForbiddenException.class})
     public ModelAndView resolverLoginFailedException(Exception ex,
                                                      HttpServletRequest request,
                                                      HttpServletResponse response) {
         return commonResolver("admin/login", ex, request, response);
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ModelAndView resolverException(Exception exception,
-                                          HttpServletRequest request,
-                                          HttpServletResponse response) {
-        return commonResolver("system/error", exception, request, response);
     }
 
     /**

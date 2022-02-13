@@ -1,8 +1,12 @@
 package pers.prover07.crowd.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import pers.prover.crowd.constant.HttpRespMsgConstant;
+import pers.prover.crowd.exception.AdminLoginAcctNoUniqueException;
 import pers.prover.crowd.exception.LoginFailedException;
 import pers.prover.crowd.util.CrowdUtil;
 import pers.prover07.crowd.dao.AdminMapper;
@@ -54,5 +58,53 @@ public class AdminServiceImpl implements AdminService {
             throw new LoginFailedException(HttpRespMsgConstant.LOGIN_FAILED);
         }
         return admin;
+    }
+
+    @Override
+    public void saveAdmin(Admin admin) {
+        // 对密码进行加密
+        String userPswd = admin.getUserPswd();
+        String encodedUserPswd = CrowdUtil.md5(userPswd);
+        admin.setUserPswd(encodedUserPswd);
+
+        // 保存到数据库
+        try {
+            adminMapper.insert(admin);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            // 如果出现 UNIQUE 索引重复问题就抛出 AdminLoginAcctNoUnique 异常
+            if (e instanceof DuplicateKeyException) {
+                throw new AdminLoginAcctNoUniqueException(HttpRespMsgConstant.SYSTEM_ERROR_ADMIN_UNIQUE);
+            }
+        }
+    }
+
+    @Override
+    public PageInfo<Admin> getPageInfo(String keyword, Integer pageNum, Integer pageSize) {
+        // 开启 PageHelper 分页
+        PageHelper.startPage(pageNum, pageSize);
+
+        // 调用查询方法
+        List<Admin> adminList = adminMapper.selectAdminByKeyword(keyword);
+
+        // 封装成 PageInfo 对象
+        return new PageInfo<>(adminList);
+    }
+
+    @Override
+    public void removeById(Integer id) {
+        adminMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public Admin getAdminById(Integer id) {
+        return adminMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public void editAdmin(Admin admin) {
+        // 根据注解并只更新属性不为 null 的字段值
+        adminMapper.updateByPrimaryKeySelective(admin);
     }
 }
