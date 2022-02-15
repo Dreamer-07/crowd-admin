@@ -27,7 +27,7 @@ public class ExceptionHandlerConfig {
     public ModelAndView resolverAdminLoginAcctNoUnique(AdminLoginAcctNoUniqueException ex,
                                                        HttpServletRequest request,
                                                        HttpServletResponse response) {
-        return commonResolver("admin/add", ex, request, response);
+        return commonResolver(ex.getErrorPageUrl(), ex, request, response);
     }
 
     @ExceptionHandler({LoginFailedException.class, AccessForbiddenException.class})

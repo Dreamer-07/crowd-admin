@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="pers.prover07.crowd.dao.pers.prover07.crowd.dao.AdminMapper">
-  <resultMap id="BaseResultMap" type="pers.prover07.crowd.entity.Admin">
+<mapper namespace="pers.prover07.crowd.dao.RoleMapper">
+  <resultMap id="BaseResultMap" type="pers.prover07.crowd.entity.Role">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="login_acct" jdbcType="VARCHAR" property="loginAcct" />
-    <result column="user_pswd" jdbcType="VARCHAR" property="userPswd" />
-    <result column="user_name" jdbcType="VARCHAR" property="userName" />
-    <result column="email" jdbcType="VARCHAR" property="email" />
-    <result column="create_time" jdbcType="CHAR" property="createTime" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -68,15 +64,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, login_acct, user_pswd, user_name, email, create_time
+    id, name
   </sql>
-  <select id="selectByExample" parameterType="pers.prover07.crowd.entity.AdminExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="pers.prover07.crowd.entity.RoleExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from t_admin
+    from t_role
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -87,96 +83,62 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from t_admin
+    from t_role
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectRoleByKeyword" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_role
+    where name like concat('%', #{keyword}, '%')
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_admin
+    delete from t_role
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="pers.prover07.crowd.entity.AdminExample">
-    delete from t_admin
+  <delete id="deleteByExample" parameterType="pers.prover07.crowd.entity.RoleExample">
+    delete from t_role
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="pers.prover07.crowd.entity.Admin">
-    insert into t_admin (id, login_acct, user_pswd, 
-      user_name, email, create_time
-      )
-    values (#{id,jdbcType=INTEGER}, #{loginAcct,jdbcType=VARCHAR}, #{userPswd,jdbcType=VARCHAR}, 
-      #{userName,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{createTime,jdbcType=CHAR}
-      )
+  <insert id="insert" parameterType="pers.prover07.crowd.entity.Role">
+    insert into t_role (id, name)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="pers.prover07.crowd.entity.Admin">
-    insert into t_admin
+  <insert id="insertSelective" parameterType="pers.prover07.crowd.entity.Role">
+    insert into t_role
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
-      <if test="loginAcct != null">
-        login_acct,
-      </if>
-      <if test="userPswd != null">
-        user_pswd,
-      </if>
-      <if test="userName != null">
-        user_name,
-      </if>
-      <if test="email != null">
-        email,
-      </if>
-      <if test="createTime != null">
-        create_time,
+      <if test="name != null">
+        name,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="loginAcct != null">
-        #{loginAcct,jdbcType=VARCHAR},
-      </if>
-      <if test="userPswd != null">
-        #{userPswd,jdbcType=VARCHAR},
-      </if>
-      <if test="userName != null">
-        #{userName,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null">
-        #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=CHAR},
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="pers.prover07.crowd.entity.AdminExample" resultType="java.lang.Long">
-    select count(*) from t_admin
+  <select id="countByExample" parameterType="pers.prover07.crowd.entity.RoleExample" resultType="java.lang.Long">
+    select count(*) from t_role
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update t_admin
+    update t_role
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.loginAcct != null">
-        login_acct = #{record.loginAcct,jdbcType=VARCHAR},
-      </if>
-      <if test="record.userPswd != null">
-        user_pswd = #{record.userPswd,jdbcType=VARCHAR},
-      </if>
-      <if test="record.userName != null">
-        user_name = #{record.userName,jdbcType=VARCHAR},
-      </if>
-      <if test="record.email != null">
-        email = #{record.email,jdbcType=VARCHAR},
-      </if>
-      <if test="record.createTime != null">
-        create_time = #{record.createTime,jdbcType=CHAR},
+      <if test="record.name != null">
+        name = #{record.name,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -184,45 +146,25 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update t_admin
+    update t_role
     set id = #{record.id,jdbcType=INTEGER},
-      login_acct = #{record.loginAcct,jdbcType=VARCHAR},
-      user_pswd = #{record.userPswd,jdbcType=VARCHAR},
-      user_name = #{record.userName,jdbcType=VARCHAR},
-      email = #{record.email,jdbcType=VARCHAR},
-      create_time = #{record.createTime,jdbcType=CHAR}
+      name = #{record.name,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="pers.prover07.crowd.entity.Admin">
-    update t_admin
+  <update id="updateByPrimaryKeySelective" parameterType="pers.prover07.crowd.entity.Role">
+    update t_role
     <set>
-      <if test="loginAcct != null">
-        login_acct = #{loginAcct,jdbcType=VARCHAR},
-      </if>
-      <if test="userPswd != null">
-        user_pswd = #{userPswd,jdbcType=VARCHAR},
-      </if>
-      <if test="userName != null">
-        user_name = #{userName,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null">
-        email = #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=CHAR},
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="pers.prover07.crowd.entity.Admin">
-    update t_admin
-    set login_acct = #{loginAcct,jdbcType=VARCHAR},
-      user_pswd = #{userPswd,jdbcType=VARCHAR},
-      user_name = #{userName,jdbcType=VARCHAR},
-      email = #{email,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=CHAR}
+  <update id="updateByPrimaryKey" parameterType="pers.prover07.crowd.entity.Role">
+    update t_role
+    set name = #{name,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

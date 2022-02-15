@@ -75,7 +75,7 @@ public class AdminServiceImpl implements AdminService {
 
             // 如果出现 UNIQUE 索引重复问题就抛出 AdminLoginAcctNoUnique 异常
             if (e instanceof DuplicateKeyException) {
-                throw new AdminLoginAcctNoUniqueException(HttpRespMsgConstant.SYSTEM_ERROR_ADMIN_UNIQUE);
+                throw new AdminLoginAcctNoUniqueException(HttpRespMsgConstant.SYSTEM_ERROR_ADMIN_UNIQUE, "admin/add");
             }
         }
     }
