@@ -13,6 +13,10 @@
     <!-- 配置组件扫描 -->
     <context:component-scan base-package="pers.prover07.crowd"/>
 
+    <!-- 配置 SpringMVC 支持 multipart/form-data 类型的 POST 提交 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    </bean>
+
     <!-- 配置视图解析器 -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/"/>
@@ -32,6 +36,7 @@
     <mvc:view-controller path="/main" view-name="admin/main" />
     <mvc:view-controller path="/admin/to/add" view-name="admin/add" />
     <mvc:view-controller path="/role/to/page" view-name="role/page" />
+    <mvc:view-controller path="/menu/to/tree" view-name="menu/tree" />
 
     <mvc:interceptors>
         <mvc:interceptor>

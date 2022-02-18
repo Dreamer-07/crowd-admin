@@ -12,6 +12,44 @@
 
 ## 前端
 
+### JS 多层解构赋值
+
+```javascript
+const {data: { success, message, data }} = await getTree()
+```
+
+### JS 实现深度优先遍历(DFS)
+
+```javascript
+let stack = [data]
+while (stack.length) {
+    let menuItem = stack.pop()
+    
+    // 业务逻辑处理放在这里
+    menuItem.open = true
+    
+    let menuItemChildren = menuItem.children
+    for (let i = menuItemChildren.length - 1; i >= 0; i--) {
+        stack.push(menuItemChildren[i])
+    }
+}
+```
+
+### JS 逗号操作符
+
+作用：**逗号操作符** 对它的每个操作数求值（从左到右），并返回最后一个操作数的值。
+
+实例：通过该操作符可以实现从一个对象中的属性继承一部分后生成一个新对象
+
+```javascript
+const extendObjAttr = (sourceObj, attrNameArr) => attrNameArr.reduce(
+    (iter, val) => (val in sourceObj && (iter[val] = sourceObj[val]), iter),
+    {}
+)
+
+let dataObj = extendObjAttr(menuNodeInfo, ['id', 'name', 'icon', 'url']) 
+```
+
 ## 后端
 
 ### 基于 Maven 的 MyBatis 的逆向工程

@@ -52,6 +52,6 @@
             <property name="enableSubPackages" value="false" />
         </javaClientGenerator>
         <!-- 需要映射的表，以及对应的实体类名 -->
-        <table tableName="t_role" domainObjectName="Role"/>
+        <table tableName="t_menu" domainObjectName="Menu"/>
     </context>
 </generatorConfiguration>
