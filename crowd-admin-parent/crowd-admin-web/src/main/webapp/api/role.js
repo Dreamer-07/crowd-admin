@@ -39,7 +39,7 @@ function loadTableData({list}) {
                 <td><input data-id="${list[i].id}" type="checkbox" class="select-remove-role"></td>
                 <td>${list[i].name}</td>
                 <td>
-                    <button type="button" class="btn btn-success btn-xs"><i
+                    <button data-id="${list[i].id}" type="button" class="btn btn-success btn-xs assign-auth-btn"><i
                             class="glyphicon glyphicon-check"></i></button>
                     <button data-id="${list[i].id}" type="button" class="btn btn-primary btn-xs edit-btn"><i
                             class="glyphicon glyphicon-pencil"></i></button>
@@ -76,4 +76,46 @@ function selectPageNumCallback(pageNum) {
 
 function removeRoleByIds(ids) {
     return axios.post('role/remove', ids)
+}
+
+// 生成有关角色的权限数
+async function generateRoleAuthTree(roleId) {
+    // 获取所有数据
+    const allAuthList = await getAllAuth()
+
+    // zTree 树形结构设置
+    const zTreeSetting = {
+        data: {
+            simpleData: {
+                enable: true,
+                pIdKey: "categoryId"
+            },
+            key: {
+                name: "title"
+            }
+        },
+        check: {
+            enable: true
+        }
+    }
+
+    // 生成树
+    $.fn.zTree.init($("#authTreeDemo"), zTreeSetting, allAuthList)
+
+    // 获取zTree对象
+    const zTreeObj = $.fn.zTree.getZTreeObj("authTreeDemo");
+
+    // 展开全部
+    zTreeObj.expandAll(true)
+
+    // 获取当前选择的 角色(role) 关联的 权限(auth)
+    const authIds = await getAuthIdByRoleId(roleId)
+
+    // 勾选已经关联的权限(auth)
+    const check = true
+    const checkTypeFlag = false
+    authIds.forEach(authId => {
+        const authNodeInfo = zTreeObj.getNodeByParam("id", authId);
+        zTreeObj.checkNode(authNodeInfo, check, checkTypeFlag)
+    })
 }

@@ -633,7 +633,7 @@ let dataObj = extendObjAttr(menuNodeInfo, ['id', 'name', 'icon', 'url'])
    - 角色 -> 权限：单向多对多(Java 类中可以通过角色类查找对应的权限类集合，权限类不可以)
    - 用户 -> 角色：双向多对多(java 类中可以通过用户类查找对应的角色类集合，角色类也可以)
 
-### RBAC 权限模型
+#### RBAC 权限模型
 
 > 概念
 

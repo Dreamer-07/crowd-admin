@@ -20,4 +20,10 @@ public interface RoleService {
     public void editRole(Role role);
 
     public void removeRoleByIds(List<Integer> ids);
+
+    List<Role> getAssignedRole(Integer adminId);
+
+    List<Role> getUnAssignedRole(Integer adminId);
+
+    void saveRoleAdminRelation(Integer adminId, List<Integer> assignedRoleList);
 }

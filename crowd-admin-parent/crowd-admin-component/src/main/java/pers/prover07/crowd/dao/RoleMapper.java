@@ -29,4 +29,12 @@ public interface RoleMapper {
     int updateByPrimaryKeySelective(Role record);
 
     int updateByPrimaryKey(Role record);
+
+    List<Role> selectAssignedRole(Integer adminId);
+
+    List<Role> selectUnAssignedRole(Integer adminId);
+
+    void deleteAdminRelation(Integer adminId);
+
+    void insertRoleAdminRelation(@Param("adminId") Integer adminId, @Param("assignedRoleList") List<Integer> assignedRoleList);
 }

@@ -4,10 +4,13 @@
     <title>(尚筹网)后台管理</title>
     <%@ include file="/WEB-INF/include/resources.jsp" %>
     <link rel="stylesheet" href="css/pagination.css">
+    <link rel="stylesheet" href="ztree/zTreeStyle.css">
     <script type="text/javascript" src="jquery/jquery.pagination.js"></script>
     <script type="text/javascript" src="axios/axios.min.js"></script>
     <script type="text/javascript" src="axios/qs.min.js"></script>
+    <script type="text/javascript" src="ztree/jquery.ztree.all-3.5.min.js"></script>
     <script type="text/javascript" src="api/role.js"></script>
+    <script type="text/javascript" src="api/auth.js"></script>
     <script type="text/javascript">
         $(function () {
             // 初始化数据
@@ -96,7 +99,7 @@
                     $("#removeFormModel").modal('show')
                     $("#removeFormModelBody").empty()
                     checkedRemoveRoleIds = []
-                    $checkedRole.each(function (){
+                    $checkedRole.each(function () {
                         $("#removeFormModelBody").append('<p>' + $(this).parent().next().text() + '</p>')
                         checkedRemoveRoleIds.push($(this).data('id'))
                     })
@@ -106,9 +109,8 @@
 
             })
 
-
             $("#removeFormModelBtn").click(function () {
-                removeRoleByIds(checkedRemoveRoleIds).then(({data:result}) => {
+                removeRoleByIds(checkedRemoveRoleIds).then(({data: result}) => {
                     $("removeFormModel").modal('hide')
                     if (result.success) {
                         alert('删除成功')
@@ -119,6 +121,27 @@
                 }).catch(reason => {
                     console.error('服务器出错啦！！' + reason)
                 })
+            })
+
+            let roleId;
+            $("#roleDataTableBody").on('click', '.assign-auth-btn', function () {
+                roleId = $(this).data('id');
+                generateRoleAuthTree(roleId)
+                $("#assignModal").modal('show')
+            })
+
+            $("#assignBtn").click(function () {
+                const zTreeObj = $.fn.zTree.getZTreeObj("authTreeDemo");
+
+                // 获取选择的权限 id 集合
+                const checkedNodeIds = zTreeObj.getCheckedNodes().map(checkedNode => checkedNode.id);
+
+                saveRoleAuthRelation(roleId, checkedNodeIds)
+                    .catch(reason => alert("服务器出错啦: " + reason.message))
+                    .finally(
+                        $("#assignModal").modal('hide')
+                    )
+
             })
         })
     </script>
@@ -187,6 +210,7 @@
 <%@ include file="/WEB-INF/common/model-add-form.jsp" %>
 <%@ include file="/WEB-INF/common/model-edit-form.jsp" %>
 <%@ include file="/WEB-INF/common/model-remove-form.jsp" %>
+<%@ include file="/WEB-INF/common/modal-role-assign-auth.jsp" %>
 <script type="text/javascript">
 </script>
 </body>
