@@ -613,6 +613,85 @@ let dataObj = extendObjAttr(menuNodeInfo, ['id', 'name', 'icon', 'url'])
    </aop:config>
    ```
 
+### SpringMVC 整合 SpringSecurity
+
+> SpringSecurity学习：(基于 SpringBoot) TODO
+
+1. 导入依赖
+
+   ```xml
+   <dependency>
+       <groupId>org.springframework.security</groupId>
+       <artifactId>spring-security-web</artifactId>
+       <version>4.2.10.RELEASE</version>
+   </dependency>
+   <!-- SpringSecurity 配置 -->
+   <dependency>
+       <groupId>org.springframework.security</groupId>
+       <artifactId>spring-security-config</artifactId>
+       <version>4.2.10.RELEASE</version>
+   </dependency>
+   <!-- SpringSecurity 标签库 -->
+   <dependency>
+       <groupId>org.springframework.security</groupId>
+       <artifactId>spring-security-taglibs</artifactId>
+       <version>4.2.10.RELEASE</version>
+   </dependency>
+   ```
+
+2. [web.xml] 配置 SpringSecurity 用来做权限控制的 Filter
+
+   ```xml
+   <filter>
+       <filter-name>springSecurityFilterChain</filter-name>
+       <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+   </filter>
+   <filter-mapping>
+       <filter-name>springSecurityFilterChain</filter-name>
+       <url-pattern>/*</url-pattern>
+   </filter-mapping>
+   ```
+
+   注意：`<filter-name>` 必须为 **springSecurityFilterChain**
+
+3. 在 `config` 包下创建 **配置类**
+
+   ```java
+   @Configuration
+   @EnableWebSecurity
+   public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
+   }
+   ```
+
+   继承 **WebSecurityConfigurerAdapter** 可以定制 SpringSecurity
+
+   使用 **@EnableWebSecurity** 注解是开启 SpringSecurity 功能
+
+4. 创建 [spring-security.xml] 配置文件
+
+   ```xml
+   <?xml version="1.0" encoding="UTF-8"?>
+   <beans xmlns="http://www.springframework.org/schema/beans"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+   
+       <!-- 导入配置类 -->
+       <bean id="webAppSecurityConfig" class="pers.prover07.crowd.config.WebAppSecurityConfig"/>
+   
+   </beans>
+   ```
+
+5. [web.xml]在 SpringIOC 容器中加载 `spring-security.xml` 文件
+
+   ```xml
+   <!-- 配置容器参数 -->
+   <context-param>
+       <param-name>contextConfigLocation</param-name>
+       <!-- 指定配置文件位置 -->
+       <param-value>classpath:spring-persist-*.xml,classpath:spring-security.xml</param-value>
+   </context-param>
+   ```
+
 ## 其他
 
 ### RBAC 权限控制模型
@@ -678,3 +757,4 @@ let dataObj = extendObjAttr(menuNodeInfo, ['id', 'name', 'icon', 'url'])
 基本 RBAC 模型
 
 ![image-20220213220117792](README.assets/image-20220213220117792.png)
+
