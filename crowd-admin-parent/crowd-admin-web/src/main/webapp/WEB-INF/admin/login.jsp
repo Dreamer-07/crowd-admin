@@ -16,7 +16,7 @@
 
 <div class="w-3/4 mx-auto">
 
-    <form action="admin/login" method="post" class="w-1/5 mx-auto" role="form">
+    <form action="auth/login" method="post" class="w-1/5 mx-auto" role="form">
         <h2 class="text-3xl mt-4 mb-1.5"><i class="glyphicon glyphicon-log-in"></i> 管理员登录</h2>
         <p class="text-red-400">${requestScope.exception.message}</p>
         <div>

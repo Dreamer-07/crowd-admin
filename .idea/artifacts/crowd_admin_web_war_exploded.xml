@@ -20,10 +20,10 @@
           <element id="archive" name="crowd-admin-entity-1.0-SNAPSHOT.jar">
             <element id="module-output" name="crowd-admin-entity" />
           </element>
+          <element id="library" level="project" name="Maven: org.projectlombok:lombok:1.16.18" />
           <element id="archive" name="crowd-common-util-1.0-SNAPSHOT.jar">
             <element id="module-output" name="crowd-common-util" />
           </element>
-          <element id="library" level="project" name="Maven: org.projectlombok:lombok:1.18.4" />
           <element id="archive" name="crowd-common-reverse-1.0-SNAPSHOT.jar">
             <element id="module-output" name="crowd-common-reverse" />
           </element>

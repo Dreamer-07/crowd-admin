@@ -4,7 +4,9 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import pers.prover.crowd.constant.HttpRespMsgConstant;
 import pers.prover.crowd.exception.AdminLoginAcctNoUniqueException;
 import pers.prover.crowd.exception.LoginFailedException;
@@ -28,6 +30,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private AdminMapper adminMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public Admin getAdminByUserInfo(String username, String password) {
@@ -64,7 +69,7 @@ public class AdminServiceImpl implements AdminService {
     public void saveAdmin(Admin admin) {
         // 对密码进行加密
         String userPswd = admin.getUserPswd();
-        String encodedUserPswd = CrowdUtil.md5(userPswd);
+        String encodedUserPswd = passwordEncoder.encode(userPswd);
         admin.setUserPswd(encodedUserPswd);
 
         // 保存到数据库
@@ -106,5 +111,17 @@ public class AdminServiceImpl implements AdminService {
     public void editAdmin(Admin admin) {
         // 根据注解并只更新属性不为 null 的字段值
         adminMapper.updateByPrimaryKeySelective(admin);
+    }
+
+    @Override
+    public Admin getAdminByLoginAcct(String loginAcct) {
+        AdminExample adminExample = new AdminExample();
+        AdminExample.Criteria criteria = adminExample.createCriteria();
+        criteria.andLoginAcctEqualTo(loginAcct);
+        List<Admin> admins = adminMapper.selectByExample(adminExample);
+        if (CollectionUtils.isEmpty(admins)) {
+            throw new LoginFailedException(HttpRespMsgConstant.ADMIN_NOT_EXISTS);
+        }
+        return admins.get(0);
     }
 }

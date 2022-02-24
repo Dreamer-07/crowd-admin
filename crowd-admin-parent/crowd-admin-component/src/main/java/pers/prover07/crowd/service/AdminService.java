@@ -55,4 +55,11 @@ public interface AdminService {
      * @param admin
      */
     void editAdmin(Admin admin);
+
+    /**
+     * 根据登录账号查找 Admin 信息
+     * @param loginAcct
+     * @return
+     */
+    Admin getAdminByLoginAcct(String loginAcct);
 }

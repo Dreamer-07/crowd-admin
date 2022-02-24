@@ -37,8 +37,16 @@ public class ExceptionHandlerConfig {
         return commonResolver("admin/login", ex, request, response);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ModelAndView resolverException(Exception ex,
+                                          HttpServletRequest request,
+                                          HttpServletResponse response) {
+        return commonResolver("system/error", ex, request, response);
+    }
+
     /**
      * 异常解析通用处理逻辑
+     *
      * @param viewName
      * @param exception
      * @param request
@@ -58,9 +66,10 @@ public class ExceptionHandlerConfig {
             ResultEntity resultEntity = ResultEntity.fail(message);
             // 使用 GSON 进行转换
             Gson gson = new Gson();
-            String jsonStr = gson.toJson(resultEntity);
             // 返回 json 字符串数据
+            String jsonStr = gson.toJson(resultEntity);
             try {
+                response.setContentType("text/javascript; charset=utf-8");
                 response.getWriter().write(jsonStr);
             } catch (IOException e) {
                 e.printStackTrace();

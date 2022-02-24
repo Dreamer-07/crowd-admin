@@ -32,6 +32,8 @@ public interface AuthMapper {
 
     List<Integer> selectAssignedByRoleId(Integer roleId);
 
+    List<String> selectAssignedAuthNameByRoleIds(@Param("roleIds") List<Integer> roleIds);
+
     void deleteRoleRelation(Integer roleId);
 
     void saveRoleAuthRelation(@Param("roleId") Integer roleId,@Param("authIds") List<Integer> authIds);

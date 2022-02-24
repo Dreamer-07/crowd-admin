@@ -33,6 +33,11 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public List<String> getRoleAssignedByRoleIds(List<Integer> roleIds) {
+        return authMapper.selectAssignedAuthNameByRoleIds(roleIds);
+    }
+
+    @Override
     public void saveRoleAuthRelation(Integer roleId, List<Integer> authIds) {
         authMapper.deleteRoleRelation(roleId);
 
