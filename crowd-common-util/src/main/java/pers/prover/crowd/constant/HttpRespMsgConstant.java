@@ -16,6 +16,9 @@ public class HttpRespMsgConstant {
     public static final String ACCESS_DENIED = "没有相关权限";
     public static final String STRING_INVALIDATE = "字符串数据不合法";
     public static final String SYSTEM_ERROR_ADMIN_UNIQUE = "系统错误:用户不唯一";
+    public static final String SYSTEM_ERROR_REDIS_SAVE = "系统错误:保存到 Redis 失败";
 
     public static final String ADMIN_NOT_EXISTS = "用户不存在";
+
+    public static final String AUTH_SEND_MESSAGE_ERROR = "auth:发送手机验证码失败";
 }
