@@ -2,13 +2,10 @@ package pers.prover.crowd.util;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
-import com.aliyun.oss.model.PutObjectResult;
 import org.apache.http.HttpResponse;
 import pers.prover.crowd.constant.HttpRespMsgConstant;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -131,7 +128,7 @@ public class CrowdUtil {
      * @param fileName        文件名
      * @return
      */
-    public static boolean uploadFileToOSS(
+    public static String uploadFileToOSS(
             String endpoint,
             String bucketName,
             String accessKeyId,
@@ -148,12 +145,13 @@ public class CrowdUtil {
 
         // 通过 OSS Client 上传文件并得到响应结果数据
         try {
-            PutObjectResult putObjectResult = ossClient.putObject(bucketName, filePathUrl, inputStream);
+            ossClient.putObject(bucketName, filePathUrl, inputStream);
 
-            // 如果上传成功 -> getResponse != null
-            return putObjectResult.getResponse() != null;
+            // 如果上传成功, 返回文件路径
+            return "https://" + bucketName + "." + endpoint + "/" + filePathUrl;
         } catch (Exception e) {
-            return false;
+            e.printStackTrace();
+            return "";
         } finally {
             if (ossClient != null) {
                 ossClient.shutdown();
